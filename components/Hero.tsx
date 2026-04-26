@@ -17,6 +17,12 @@ export function Hero() {
 
   // Preload images
   useEffect(() => {
+    // Prevent browser from restoring scroll position on refresh
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+    }
+
     const loadImages = async () => {
       const promises = [];
       for (let i = 1; i <= FRAME_COUNT; i++) {
@@ -42,6 +48,13 @@ export function Hero() {
     };
 
     loadImages();
+
+    // Clean up scroll restoration on unmount if needed
+    return () => {
+      if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "auto";
+      }
+    };
   }, []);
 
   const overlayRef = useRef<HTMLDivElement>(null);
