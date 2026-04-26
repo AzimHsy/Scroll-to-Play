@@ -18,54 +18,62 @@ export function TextReveal({ children, className = "" }: TextRevealProps) {
   const container = useRef<HTMLDivElement>(null);
   const charsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
-  // Split string into individual characters
-  const characters = useMemo(() => children.split(""), [children]);
+  // Split into words to maintain natural line wrapping
+  const words = useMemo(() => children.split(" "), [children]);
 
   useGSAP(
     () => {
       const targets = charsRef.current.filter(Boolean);
       if (targets.length === 0) return;
 
-      // Animate character by character as we scroll
       gsap.to(targets, {
         backgroundPosition: "0% 0",
         ease: "none",
-        stagger: 0.15,
+        stagger: 0.1,
         scrollTrigger: {
           trigger: container.current,
           start: "top 85%",
           end: "bottom 45%",
-          scrub: true,
+          scrub: 1,
           invalidateOnRefresh: true,
         },
       });
     },
-    { dependencies: [characters], scope: container },
+    { dependencies: [words], scope: container }
   );
+
+  let charCounter = 0;
 
   return (
     <div ref={container} className={className}>
-      {characters.map((char, i) => (
-        <span
-          key={i}
-          ref={(el) => {
-            charsRef.current[i] = el;
-          }}
-          className="inline-block"
-          style={{
-            backgroundImage: "linear-gradient(to right, #f0ede6 50%, #222 50%)",
-            backgroundSize: "200% 100%",
-            backgroundPosition: "100% 0",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            // Maintain space width correctly
-            whiteSpace: char === " " ? "pre" : "normal",
-          }}
-        >
-          {char}
-        </span>
-      ))}
+      {words.map((word, wordIdx) => {
+        return (
+          <span key={wordIdx} className="inline-block whitespace-nowrap mr-[0.3em]">
+            {word.split("").map((char, charIdx) => {
+              const currentIndex = charCounter++;
+              return (
+                <span
+                  key={charIdx}
+                  ref={(el) => {
+                    charsRef.current[currentIndex] = el;
+                  }}
+                  className="inline-block"
+                  style={{
+                    backgroundImage: "linear-gradient(to right, #f0ede6 50%, #222 50%)",
+                    backgroundSize: "200% 100%",
+                    backgroundPosition: "100% 0",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {char}
+                </span>
+              );
+            })}
+          </span>
+        );
+      })}
     </div>
   );
 }

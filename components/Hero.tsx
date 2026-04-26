@@ -44,6 +44,9 @@ export function Hero() {
     loadImages();
   }, []);
 
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+
   useGSAP(
     () => {
       if (!loaded || !canvasRef.current || !containerRef.current) return;
@@ -94,6 +97,32 @@ export function Hero() {
             const img = framesRef.current[index];
             if (img && img.complete) {
               drawCover(img);
+            }
+
+            // Fade transition logic - now ends earlier (at 0.85 instead of 1.0)
+            const fadeStart = 0.6;
+            const fadeEnd = 0.9;
+
+            if (self.progress > fadeStart) {
+              const p = Math.min(
+                1,
+                (self.progress - fadeStart) / (fadeEnd - fadeStart),
+              );
+              if (overlayRef.current) {
+                overlayRef.current.style.backgroundColor = `rgba(8, 8, 8, ${0.4 + p * 0.6})`;
+              }
+              if (textContainerRef.current) {
+                textContainerRef.current.style.opacity = (1 - p).toString();
+                textContainerRef.current.style.transform = `translateY(${-p * 50}px)`;
+              }
+            } else {
+              if (overlayRef.current) {
+                overlayRef.current.style.backgroundColor = "rgba(8, 8, 8, 0.4)";
+              }
+              if (textContainerRef.current) {
+                textContainerRef.current.style.opacity = "1";
+                textContainerRef.current.style.transform = "translateY(0px)";
+              }
             }
           },
         });
@@ -156,19 +185,26 @@ export function Hero() {
         />
 
         {/* Black Overlay */}
-        <div className="absolute inset-0 bg-black/40 z-0" />
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 z-0 transition-colors duration-100"
+          style={{ backgroundColor: "rgba(8, 8, 8, 0.4)" }}
+        />
 
         {loaded && (
           <>
             {/* Overlay Text */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none text-center px-6">
+            <div
+              ref={textContainerRef}
+              className="absolute bottom-12 left-6 md:left-12 z-10 pointer-events-none text-left transition-all duration-100 ease-out"
+            >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-6xl md:text-9xl font-serif text-foreground"
+                className="text-3xl md:text-7xl font-serif text-foreground leading-[0.9]"
               >
-                Visual <br /> Language
+                Between frames, <br /> meaning lives.
               </motion.h1>
             </div>
           </>
