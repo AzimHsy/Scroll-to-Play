@@ -165,22 +165,10 @@ export function Hero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-6xl md:text-9xl font-serif text-foreground leading-tight"
+                className="text-6xl md:text-9xl font-serif text-foreground"
               >
                 Visual <br /> Language
               </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 1,
-                  delay: 0.2,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="font-mono text-xs mt-6 text-foreground/80 uppercase tracking-[0.2em]"
-              >
-                Scroll to explore
-              </motion.p>
             </div>
           </>
         )}
