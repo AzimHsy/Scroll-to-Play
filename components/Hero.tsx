@@ -85,6 +85,7 @@ export function Hero() {
           end: "+=300%",
           pin: true,
           scrub: true,
+          refreshPriority: 1,
           onUpdate: (self) => {
             const index = Math.min(
               FRAME_COUNT - 1,
@@ -118,7 +119,7 @@ export function Hero() {
         // Force refresh after a small delay to ensure DOM is settled
         setTimeout(() => {
           ScrollTrigger.refresh();
-        }, 100);
+        }, 500);
 
         return () => window.removeEventListener("resize", handleResize);
       }

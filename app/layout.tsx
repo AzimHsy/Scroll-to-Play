@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Playfair_Display, IBM_Plex_Mono } from "next/font/google";
+import { Playfair_Display, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -27,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${plexMono.variable} antialiased`}
+      className={`${playfair.variable} ${inter.variable} ${plexMono.variable} antialiased`}
     >
       <body className="font-serif bg-background text-foreground">
         <svg className="noise-overlay" xmlns="http://www.w3.org/2000/svg">

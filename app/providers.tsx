@@ -19,8 +19,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
+    const handleLoad = () => ScrollTrigger.refresh();
+    window.addEventListener("load", handleLoad);
+
     return () => {
       lenis.off("scroll", ScrollTrigger.update);
+      window.removeEventListener("load", handleLoad);
       gsap.ticker.remove((time) => lenis.raf(time * 1000));
       lenis.destroy();
     };
